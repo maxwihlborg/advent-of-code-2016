@@ -7,21 +7,28 @@ const keypad1 = [
   [7, 8, 9],
 ]
 
-const u = null
+const _ = null
 const keypad2 = [
-  [u,  u ,  1 ],
-  [u,  2 ,  3 ,  4],
-  [5,  6 ,  7 ,  8 , 9],
-  [u, 'A', 'B', 'C'],
-  [u,  u , 'D'],
+  [ _ ,  _ ,  1 ,  _ , _ ],
+  [ _ ,  2 ,  3 ,  4 , _ ],
+  [ 5 ,  6 ,  7 ,  8 , 9 ],
+  [ _ , 'A', 'B', 'C', _ ],
+  [ _ ,  _ , 'D',  _ , _ ],
 ]
 
 const getInstructions = input => (
   input
     .split('\n')
-    .map(ln => ln.trim())
-    .filter(ln => !!ln)
-    .map(ln => ln.split('').map(s => s.toUpperCase()))
+    .reduce((acc, ln) => {
+      const str = ln.trim()
+      if (!!str) {
+        acc.push(str
+          .split('')
+          .map(chr => chr.toUpperCase())
+        )
+      }
+      return acc
+    }, [])
 )
 
 const moveMap = {
@@ -31,21 +38,21 @@ const moveMap = {
   L: [ -1,  0 ],
 }
 
-const getMap = keypad => {
-  return keypad.reduce((topAcc, r, y) => {
-    const points = r.reduce((acc, v, x) => {
-      if (v === null) return acc
-      return {
-        ...acc,
-        [`${x},${y}`]: true
-      }
-    }, {})
-    return {
-      ...topAcc,
-      ...points,
-    } 
-  }, {})
-}
+const serializePoint = (x, y) => `${x}, ${y}`
+
+const getMoveMap = keypad => (
+  keypad.reduce((topAcc, row, y) => (
+    Object.assign(topAcc,
+      row.reduce((acc, chr, x) => (
+        chr === null
+          ? acc
+          : Object.assign(acc, {
+            [serializePoint(x, y)]: true,
+          })
+      ), {})
+    )
+  ), {})
+)
 
 const getPasscode = (startPos, keypad) => {
   const state = {
@@ -53,13 +60,13 @@ const getPasscode = (startPos, keypad) => {
     passcode: '',
   }
 
-  const validate = (point, map) => {
-    return !!map[`${point[0]},${point[1]}`]
-  }
+  const validate = (point, map) => (
+    !!map[serializePoint(...point)]
+  )
 
   const instructions = getInstructions(moves)
 
-  const keypadmap = getMap(keypad)
+  const keyPadMap = getMoveMap(keypad)
 
   const { passcode } = instructions.reduce((acc, inst) => {
 
@@ -69,7 +76,7 @@ const getPasscode = (startPos, keypad) => {
 
       const np = [ acc[0] + dx, acc[1] + dy ]
 
-      return !validate(np, keypadmap) ? acc : np
+      return !validate(np, keyPadMap) ? acc : np
     }, acc.position)
 
     const passcode = acc.passcode + keypad[position[1]][position[0]].toString()
@@ -84,7 +91,7 @@ const getPasscode = (startPos, keypad) => {
 }
 
 export default function () {
-  console.log(`Passcode: ${getPasscode([1, 1], keypad1)}`)
-  console.log(`Passcode: ${getPasscode([0, 2], keypad2)}`)
+  console.log('Passcode 1:', getPasscode([1, 1], keypad1))
+  console.log('Passcode 2:', getPasscode([0, 2], keypad2))
 }
 

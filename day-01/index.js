@@ -9,10 +9,11 @@ const SOUTH = 2
 const WEST  = 3
 
 
-const generateMovements = input => (
+const getMovements = input => (
   input
     .split(',')
     .map(m => m.trim())
+    .filter(m => !!m)
     .map(m => ({
       dir: /^R/i.test(m) ? RIGHT : LEFT,
       steps: parseInt(m.substr(1)),
@@ -33,7 +34,7 @@ class Point {
   sub (p) {
     return new Point(this.x - p.x, this.y - p.y)
   }
-  taxDist () {
+  taxLength () {
     return Math.abs(this.x) + Math.abs(this.y)
   }
   toString () {
@@ -43,7 +44,7 @@ class Point {
 
 
 export default function () {
-  const movements = generateMovements(moves)
+  const movements = getMovements(moves)
 
   const startState = {
     start: new Point,
@@ -104,8 +105,8 @@ export default function () {
   }, startState)
 
   // Distance is simply the sum of the projections on the x-/y- axis ie.
-  const d1 = endState.end.sub(endState.start).taxDist()
-  const d2 = endState.goal && endState.goal.sub(endState.start).taxDist()
+  const d1 = endState.end.sub(endState.start).taxLength()
+  const d2 = endState.goal && endState.goal.sub(endState.start).taxLength()
 
   console.log(`Distance Part 1: ${d1}`)
   console.log(`Distance Part 2: ${d2}`)
