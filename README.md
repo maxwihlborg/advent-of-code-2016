@@ -1,13 +1,22 @@
 # Advent of Code 2016
 
-## Running
+## Install
 
-just run
+```js
+yarn install
+```
+
+## Usage
 
 ```js
 yarn run start <day>
-npm start <day>
 ```
 
-where `day` is an integer
+Where `day` is a number
+
+## Development
+
+```js
+yarn run test
+```
 
