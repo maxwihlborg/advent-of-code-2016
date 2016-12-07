@@ -1,6 +1,5 @@
 import data from './input'
 
-
 export const parseIp = ip => ({
   super: ip.split(/\[\S*?\]/),
   hyper: (() => {
@@ -14,7 +13,7 @@ export const parseIp = ip => ({
       }
     } while (m)
     return res
-  })(),
+  })()
 })
 
 export const isPalindrome = (str = '') => {
@@ -33,7 +32,7 @@ const checkIfShortPalindromeInString = (str, len) => {
   if (!str || str.length < len2) {
     return false
   }
-  for (let i = 0;i < str.length - len2;i++) {
+  for (let i = 0; i < str.length - len2; i++) {
     if (str[i] !== str[i + 1] && isPalindrome(str.substr(i, len))) {
       return true
     }
@@ -54,7 +53,7 @@ export const getABAs = str => {
     return []
   }
   const res = []
-  for (let i = 0;i < str.length - 2;i++) {
+  for (let i = 0; i < str.length - 2; i++) {
     if (isABA(str.substr(i, 3))) {
       res.push(str.substr(i, 3))
     }
@@ -78,6 +77,9 @@ export const supportsSSL = ip => {
   const babs = o.hyper.reduce((acc, str) => (
     acc.concat(getBABs(str))
   ), [])
+  if (!babs.length) {
+    return false
+  }
   const re = new RegExp(`(${babs.join('|')})`)
   return !!o.super.find(str => re.test(str))
 }
@@ -90,7 +92,6 @@ const getIPs = input => (
 )
 
 export default function () {
-
   const ips = getIPs(data)
 
   const tlsCount = ips.reduce((acc, ip) => {
