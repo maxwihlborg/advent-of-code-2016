@@ -125,7 +125,7 @@ export default function () {
 
   instructions.forEach(inst => disp.handle(parseRow(inst)))
 
-  console.log('Part 1', disp.visible(119))
+  console.log('Part 1', disp.visible())
   console.log('Part 2', '\n\n' + disp.toString())
 
 }
